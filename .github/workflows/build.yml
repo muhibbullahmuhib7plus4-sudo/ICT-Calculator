@@ -17,13 +17,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Setup Gradle 8.5
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.5'
 
       - name: Create Project Files
         run: |
           mkdir -p app/src/main/java/com/example/calculator
-          cp MainActivity.kt app/src/main/java/com/example/calculator/
+          if [ -f MainActivity.kt ]; then
+            cp MainActivity.kt app/src/main/java/com/example/calculator/
+          fi
           
           cat << 'EOF' > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
@@ -107,9 +111,6 @@ jobs:
           }
           EOF
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-
       - name: Build APK
         run: gradle assembleDebug
 
@@ -118,4 +119,3 @@ jobs:
         with:
           name: ICT-Calculator-APK
           path: app/build/outputs/apk/debug/app-debug.apk
-          
